@@ -8,6 +8,10 @@ export default function AuthCallback() {
 
   useEffect(() => {
     const handleCallback = async () => {
+      if (!supabase) {
+        navigate('/login', { replace: true })
+        return
+      }
       try {
         // Supabase may need a moment to parse the session from the URL hash
         let { data: { session }, error } = await supabase.auth.getSession()

@@ -1,7 +1,10 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase'
+import { supabase, isSupabaseConfigured } from '../lib/supabase'
 
 const AuthContext = createContext(null)
+
+const NOT_CONFIGURED_MSG =
+  'Auth is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Vercel (Project → Settings → Environment Variables), then redeploy.'
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
@@ -9,6 +12,10 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false)
+      return
+    }
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
       setUser(session?.user ?? null)
@@ -27,12 +34,14 @@ export function AuthProvider({ children }) {
   }, [])
 
   const signIn = async (email, password) => {
+    if (!supabase) throw new Error(NOT_CONFIGURED_MSG)
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
     return data
   }
 
   const signUp = async (email, password, options = {}) => {
+    if (!supabase) throw new Error(NOT_CONFIGURED_MSG)
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -46,10 +55,12 @@ export function AuthProvider({ children }) {
   }
 
   const signOut = async () => {
+    if (!supabase) return
     await supabase.auth.signOut()
   }
 
   const resetPassword = async (email) => {
+    if (!supabase) throw new Error(NOT_CONFIGURED_MSG)
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/auth/callback`,
     })
@@ -58,7 +69,18 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signIn, signUp, signOut, resetPassword }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        session,
+        loading,
+        isConfigured: isSupabaseConfigured(),
+        signIn,
+        signUp,
+        signOut,
+        resetPassword,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )

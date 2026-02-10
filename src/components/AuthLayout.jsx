@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function AuthLayout({ children, linkTo, linkText }) {
+  const { isConfigured } = useAuth()
   return (
     <div className="min-h-screen flex">
       {/* Left: decorative gradient + pattern */}
@@ -23,6 +25,11 @@ export default function AuthLayout({ children, linkTo, linkText }) {
       {/* Right: form */}
       <div className="flex-1 flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 bg-[#0f0f14]">
         <div className="w-full max-w-md mx-auto">
+          {!isConfigured && (
+            <div className="mb-6 p-4 rounded-xl bg-[#ff6b6b]/10 border border-[#ff6b6b]/30 text-[#ff6b6b] text-sm">
+              Auth is not configured. Add <strong>VITE_SUPABASE_URL</strong> and <strong>VITE_SUPABASE_ANON_KEY</strong> in Vercel (Project → Settings → Environment Variables), then redeploy.
+            </div>
+          )}
           {children}
           {linkTo && linkText && (
             <p className="mt-8 text-center text-[#6b6b7b] text-sm">
