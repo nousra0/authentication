@@ -1,0 +1,14 @@
+# Dependencies
+node_modules
+
+# Build
+dist
+
+# Env (keep credentials out of git)
+.env
+.env.local
+.env.*.local
+
+# Editor / OS
+.DS_Store
+*.log
