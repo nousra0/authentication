@@ -26,13 +26,10 @@ export default function AuthCallback() {
           setTimeout(() => navigate('/login', { replace: true }), 2000)
           return
         }
-        if (session?.user) {
-          setStatus('Success! Redirecting...')
-          navigate('/dashboard', { replace: true })
-        } else {
-          setStatus('Email confirmed! Redirecting to sign in...')
-          navigate('/login?confirmed=1', { replace: true })
-        }
+        // Always send user to sign-in after confirmation (they must sign in with their password)
+        setStatus('Email confirmed! Redirecting to sign in...')
+        await supabase.auth.signOut()
+        navigate('/login?confirmed=1', { replace: true })
       } catch {
         setStatus('Something went wrong.')
         setTimeout(() => navigate('/login', { replace: true }), 2000)
