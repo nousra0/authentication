@@ -25,7 +25,6 @@ export default function SignUp() {
     try {
       await signUp(email, password, {
         userMetadata: { full_name: name },
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
       })
       navigate('/signup/success', { replace: true })
     } catch (err) {

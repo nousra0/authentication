@@ -6,6 +6,13 @@ const AuthContext = createContext(null)
 const NOT_CONFIGURED_MSG =
   'Auth is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Vercel (Project → Settings → Environment Variables), then redeploy.'
 
+// Use VITE_APP_URL in production so confirmation/password-reset emails point to your deployed app, not localhost
+function getAuthRedirectBase() {
+  const envUrl = import.meta.env.VITE_APP_URL
+  if (envUrl) return envUrl.replace(/\/$/, '') // trim trailing slash
+  return typeof window !== 'undefined' ? window.location.origin : ''
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [session, setSession] = useState(null)
@@ -47,7 +54,7 @@ export function AuthProvider({ children }) {
       password,
       options: {
         data: options.userMetadata,
-        emailRedirectTo: options.emailRedirectTo || `${window.location.origin}/auth/callback`,
+        emailRedirectTo: options.emailRedirectTo || `${getAuthRedirectBase()}/auth/callback`,
       },
     })
     if (error) throw error
@@ -62,7 +69,7 @@ export function AuthProvider({ children }) {
   const resetPassword = async (email) => {
     if (!supabase) throw new Error(NOT_CONFIGURED_MSG)
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback`,
+      redirectTo: `${getAuthRedirectBase()}/auth/callback`,
     })
     if (error) throw error
     return data

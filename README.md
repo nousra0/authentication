@@ -21,8 +21,8 @@ A modern authentication UI with **real auth** via **Supabase** (free tier). Reac
    - **Authentication → Providers → Email** → turn on **“Confirm email”**.
 4. Add redirect URLs:
    - **Authentication → URL Configuration**
-   - **Redirect URLs**: add `http://localhost:5173/auth/callback` (and your production URL when you deploy).
-   - **Site URL**: e.g. `http://localhost:5173` for local dev.
+   - **Redirect URLs**: add `http://localhost:5173/auth/callback` (local) and `https://your-app.vercel.app/auth/callback` (production).
+   - **Site URL**: `http://localhost:5173` for local dev; set to your production URL (e.g. `https://your-app.vercel.app`) so confirmation emails link to your live app, not localhost.
 
 Create a `.env` file in the project root (see `.env.example`):
 
@@ -40,6 +40,16 @@ npm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173). You’ll be redirected to `/login`.
+
+## Deploying to Vercel
+
+1. In **Vercel → Project → Settings → Environment Variables**, add:
+   - `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
+   - **`VITE_APP_URL`** = your Vercel URL (e.g. `https://authentication-eta-gules.vercel.app`) so confirmation and password-reset emails point to your app instead of localhost.
+2. In **Supabase → Authentication → URL Configuration**:
+   - **Site URL**: set to your Vercel URL (e.g. `https://your-app.vercel.app`).
+   - **Redirect URLs**: include `https://your-app.vercel.app/auth/callback`.
+3. Redeploy after changing env vars.
 
 ## Routes
 
