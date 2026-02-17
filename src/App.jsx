@@ -4,6 +4,7 @@ import SignUp from './pages/SignUp'
 import SignUpSuccess from './pages/SignUpSuccess'
 import ForgotPassword from './pages/ForgotPassword'
 import AuthCallback from './pages/AuthCallback'
+import RedirectToAuthCallback from './pages/RedirectToAuthCallback'
 import Dashboard from './pages/Dashboard'
 import ProtectedRoute from './components/ProtectedRoute'
 
@@ -15,6 +16,7 @@ function App() {
       <Route path="/signup" element={<SignUp />} />
       <Route path="/signup/success" element={<SignUpSuccess />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/login/auth/callback" element={<RedirectToAuthCallback />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
       <Route
         path="/dashboard"
