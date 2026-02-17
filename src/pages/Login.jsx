@@ -17,6 +17,7 @@ export default function Login() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const confirmed = searchParams.get('confirmed') === '1'
+  const passwordReset = searchParams.get('reset') === '1'
 
   useEffect(() => {
     if (user) navigate('/dashboard', { replace: true })
@@ -51,6 +52,11 @@ export default function Login() {
         {confirmed && (
           <div className="mt-6 p-4 rounded-xl bg-[#4ecdc4]/10 border border-[#4ecdc4]/30 text-[#4ecdc4] text-sm">
             Email confirmed! You can sign in now.
+          </div>
+        )}
+        {passwordReset && (
+          <div className="mt-6 p-4 rounded-xl bg-[#4ecdc4]/10 border border-[#4ecdc4]/30 text-[#4ecdc4] text-sm">
+            Password reset! You can sign in with your new password.
           </div>
         )}
 

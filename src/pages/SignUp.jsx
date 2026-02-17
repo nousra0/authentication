@@ -23,9 +23,14 @@ export default function SignUp() {
     setError('')
     setLoading(true)
     try {
-      await signUp(email, password, {
+      const data = await signUp(email, password, {
         userMetadata: { full_name: name },
       })
+      // Supabase returns success but with empty identities when email already exists
+      if (data?.user?.identities?.length === 0) {
+        setError('An account with this email already exists. Please sign in or use a different email.')
+        return
+      }
       navigate('/signup/success', { replace: true })
     } catch (err) {
       const msg = err?.message || 'Sign up failed.'

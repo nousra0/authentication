@@ -69,8 +69,15 @@ export function AuthProvider({ children }) {
   const resetPassword = async (email) => {
     if (!supabase) throw new Error(NOT_CONFIGURED_MSG)
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${getAuthRedirectBase()}/auth/callback`,
+      redirectTo: `${getAuthRedirectBase()}/reset-password`,
     })
+    if (error) throw error
+    return data
+  }
+
+  const updatePassword = async (newPassword) => {
+    if (!supabase) throw new Error(NOT_CONFIGURED_MSG)
+    const { data, error } = await supabase.auth.updateUser({ password: newPassword })
     if (error) throw error
     return data
   }
@@ -86,6 +93,7 @@ export function AuthProvider({ children }) {
         signUp,
         signOut,
         resetPassword,
+        updatePassword,
       }}
     >
       {children}
